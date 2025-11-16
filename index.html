@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misión Scratch: Primeros Pasos</title>
+    <!-- Importar la fuente estilo pixel -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- ESTILOS GLOBALES Y TEMA --- */
+        :root {
+            --font-pixel: 'Press+Start+2P', cursive;
+            --color-mario-sky: #5C94FC;
+            --color-mario-block: #E7A040;
+            --color-text: #FFFFFF;
+            --color-shadow: #000000;
+            --color-success: #00E676;
+            --color-error: #FF3B30;
+            
+            --color-scratch-event: #FFBF00;
+            --color-scratch-motion: #4A90E2;
+            --color-scratch-looks: #9013FE;
+            --color-scratch-sprite: #00C853;
+            --color-card-bg: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-pixel);
+            background-color: var(--color-mario-sky);
+            color: var(--color-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden; /* Oculta nubes que se salen */
+            position: relative;
+        }
+
+        /* --- NUBES ESTILO MARIO --- */
+        .cloud {
+            background: var(--color-text);
+            border-radius: 100px;
+            position: absolute;
+        }
+        .cloud::before, .cloud::after {
+            content: '';
+            background: var(--color-text);
+            border-radius: 100px;
+            position: absolute;
+        }
+        .cloud-1 {
+            width: 100px; height: 60px;
+            top: 10%; left: 5%;
+            animation: moveCloud 30s linear infinite;
+        }
+        .cloud-1::before { width: 60px; height: 40px; top: -20px; left: 10px; }
+        .cloud-1::after { width: 70px; height: 50px; top: -10px; right: 10px; }
+
+        .cloud-2 {
+            width: 130px; height: 70px;
+            top: 20%; right: -150px; /* Empieza fuera */
+            animation: moveCloud 25s linear 5s infinite;
+        }
+        .cloud-2::before { width: 70px; height: 50px; top: -30px; left: 15px; }
+        .cloud-2::after { width: 80px; height: 60px; top: -20px; right: 15px; }
+
+        @keyframes moveCloud {
+            0% { transform: translateX(-200px); }
+            100% { transform: translateX(calc(100vw + 200px)); }
+        }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        #game-container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 4px solid var(--color-shadow);
+            border-radius: 10px;
+            box-shadow: 6px 6px 0 var(--color-shadow);
+            padding: 20px;
+            z-index: 10;
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            text-align: center;
+            text-shadow: 3px 3px 0 var(--color-shadow);
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        /* --- PANTALLAS --- */
+        .screen {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 3px solid var(--color-shadow);
+            border-radius: 8px;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .screen.hidden {
+            display: none;
+        }
+
+        .screen h2 {
+            font-size: 1.3rem;
+            color: var(--color-scratch-event);
+            text-shadow: 2px 2px 0 var(--color-shadow);
+            margin-bottom: 20px;
+        }
+        
+        .screen p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* --- BOTONES --- */
+        .btn {
+            font-family: var(--font-pixel);
+            padding: 15px 25px;
+            font-size: 1rem;
+            color: var(--color-text);
+            background: var(--color-mario-block);
+            border: 4px solid var(--color-shadow);
+            border-radius: 8px;
+            box-shadow: 4px 4px 0 var(--color-shadow);
+            cursor: pointer;
+            text-shadow: 2px 2px 0 var(--color-shadow);
+            transition: all 0.1s ease-out;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 var(--color-shadow);
+            filter: brightness(1.1);
+        }
+        
+        .btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0 var(--color-shadow);
+        }
+
+        .btn.btn-start {
+            background: var(--color-scratch-sprite);
+            font-size: 1.2rem;
+        }
+
+        nav {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        /* --- PANTALLA 2: TARJETAS DE CONCEPTOS --- */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--color-card-bg);
+            color: #333;
+            border: 4px solid var(--color-shadow);
+            box-shadow: 5px 5px 0 var(--color-shadow);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .card h3 {
+            font-family: var(--font-pixel);
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: var(--color-shadow);
+        }
+        
+        .card p {
+            font-family: 'Verdana', sans-serif; /* Texto más legible */
+            font-size: 0.9rem;
+            color: #333;
+            line-height: 1.4;
+            margin-bottom: 0;
+        }
+
+        /* --- SIMULACIÓN DE BLOQUES SCRATCH --- */
+        .scratch-block {
+            position: relative;
+            padding: 10px 15px;
+            border-radius: 5px;
+            color: var(--color-text);
+            font-family: 'Verdana', sans-serif; /* Scratch usa Sans-Serif */
+            font-weight: bold;
+            text-shadow: none;
+            display: inline-block;
+            margin: 10px 0;
+            border: 2px solid rgba(0,0,0,0.15); /* Borde sutil */
+        }
+
+        /* Bloque "Gorro" (Evento) */
+        .block-hat {
+            border-radius: 20px 20px 5px 5px;
+        }
+
+        /* Saliente inferior (para apilar) */
+        .block-hat::after, .block-stack::after {
+            content: '';
+            position: absolute;
+            bottom: -8px; /* Cuelga 8px */
+            left: 20px;
+            width: 30px;
+            height: 8px;
+            border: 2px solid rgba(0,0,0,0.15);
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            background: inherit; /* Hereda el color del bloque */
+        }
+
+        /* Muesca superior (para encajar) */
+        .block-stack::before {
+            content: '';
+            position: absolute;
+            top: -8px; /* Sube 8px */
+            left: 20px;
+            width: 30px;
+            height: 8px;
+            border-radius: 6px 6px 0 0;
+            /* La muesca toma el color del fondo donde está */
+            background: var(--color-card-bg); 
+        }
+
+        /* Colores de los bloques */
+        .block-event { background: var(--color-scratch-event); }
+        .block-motion { background: var(--color-scratch-motion); }
+        .block-looks { background: var(--color-scratch-looks); }
+        .block-sprite { background: var(--color-scratch-sprite); }
+
+
+        /* --- PANTALLA 3: MINI EDITOR --- */
+        .editor-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        #block-palette {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 5px;
+            border: 3px dashed var(--color-text);
+            min-height: 200px;
+            flex-basis: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #block-palette .scratch-block {
+            cursor: grab;
+        }
+        
+        #block-palette .scratch-block:active {
+            cursor: grabbing;
+        }
+
+        #drop-zone {
+            background: var(--color-card-bg);
+            border: 4px solid var(--color-shadow);
+            border-radius: 5px;
+            min-height: 200px;
+            flex-basis: 300px;
+            flex-grow: 1;
+            padding: 15px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        /* Los bloques arrastrados deben tener muescas blancas */
+        #drop-zone .block-stack::before {
+            background: var(--color-card-bg);
+        }
+
+        #drop-zone p {
+            color: #aaa;
+            text-shadow: none;
+            font-family: 'Verdana', sans-serif;
+            font-size: 0.9rem;
+        }
+        
+        .dragging {
+            opacity: 0.5;
+            transform: scale(1.05);
+        }
+
+        /* --- PANTALLA 4: MINI RETO --- */
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 80%;
+            max-width: 400px;
+            margin-top: 20px;
+        }
+        
+        .btn-option {
+            background: var(--color-scratch-motion);
+        }
+
+        /* --- MENSAJES DE FEEDBACK --- */
+        .feedback {
+            font-size: 1.1rem;
+            margin-top: 20px;
+            text-shadow: 2px 2px 0 var(--color-shadow);
+        }
+        .feedback.success {
+            color: var(--color-success);
+        }
+        .feedback.error {
+            color: var(--color-error);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.2rem;
+            }
+            .screen h2 {
+                font-size: 1.1rem;
+            }
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            .editor-area {
+                flex-direction: column;
+            }
+            #block-palette {
+                flex-basis: auto;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Nubes de fondo -->
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+
+    <!-- Contenedor del "juego" -->
+    <div id="game-container">
+        <header>
+            <h1>Misión Scratch: Primeros Pasos</h1>
+        </header>
+
+        <!-- Pantalla 1: Bienvenida -->
+        <div id="screen-1" class="screen">
+            <img src="gato.png" alt="Gato de Scratch" style="width: 120px; margin-bottom: 20px;">
+            <h2>¡Bienvenido, joven programador!</h2>
+            <p>Aprende los pilares de Scratch jugando y prepárate para crear tus propias historias.</p>
+            <button class="btn btn-start" data-target="1">Comenzar misión</button>
+        </div>
+
+        <!-- Pantalla 2: Conceptos -->
+        <div id="screen-2" class="screen hidden">
+            <h2>Conceptos Clave</h2>
+            <div class="card-grid">
+                <!-- Tarjeta 1: Evento -->
+                <div class="card">
+                    <h3>Evento (Inicio)</h3>
+                    <div class="scratch-block block-event block-hat">Al hacer clic en 🚩</div>
+                    <p>Son los bloques amarillos que inician un programa. ¡Como el botón de "Start"!</p>
+                </div>
+                <!-- Tarjeta 2: Movimiento -->
+                <div class="card">
+                    <h3>Movimiento</h3>
+                    <div class="scratch-block block-motion block-stack">Mover 10 pasos</div>
+                    <p>Bloques azules que controlan cómo se mueven tus personajes por la pantalla.</p>
+                </div>
+                <!-- Tarjeta 3: Apariencia -->
+                <div class="card">
+                    <h3>Apariencia</h3>
+                    <div class="scratch-block block-looks block-stack">Decir "Hola" 2s</div>
+                    <p>Bloques morados para cambiar disfraces, fondos o hacer que digan algo.</p>
+                </div>
+                <!-- Tarjeta 4: Sprite -->
+                <div class="card">
+                    <h3>Sprite (Personaje)</h3>
+                    <div class="scratch-block block-sprite">Gato de Scratch</div>
+                    <p>Es cualquier personaje u objeto que puedes programar en tu proyecto.</p>
+                </div>
+            </div>
+            <!-- Botón de avance para la pantalla 2 -->
+            <button class="btn" id="btn-goto-editor" style="margin-top: 20px;">¡Lo tengo! Ir al editor</button>
+        </div>
+
+        <!-- Pantalla 3: Mini Editor -->
+        <div id="screen-3" class="screen hidden">
+            <h2>¡Construye tu Script!</h2>
+            <p>Arrastra los bloques en el orden correcto para que el Gato salude y se mueva.</p>
+            <div class="editor-area">
+                <div id="block-palette">
+                    <!-- Los bloques están desordenados a propósito -->
+                    <div id="block-drag-2" class="scratch-block block-motion block-stack" draggable="true">Mover 10 pasos</div>
+                    <div id="block-drag-3" class="scratch-block block-looks block-stack" draggable="true">Decir "Hola" 2s</div>
+                    <div id="block-drag-1" class="scratch-block block-event block-hat" draggable="true">Al hacer clic en 🚩</div>
+                </div>
+                <div id="drop-zone">
+                    <p>Suelta los bloques aquí</p>
+                </div>
+            </div>
+            <div id="feedback-3" class="feedback hidden"></div>
+            <!-- Botón de avance para la pantalla 3 (oculto) -->
+            <button class="btn hidden" id="btn-goto-quiz" style="margin-top: 20px;">¡Genial! Ir al reto final</button>
+        </div>
+
+        <!-- Pantalla 4: Mini Reto -->
+        <div id="screen-4" class="screen hidden">
+            <h2>Mini Reto Final</h2>
+            <p>Pregunta rápida: ¿Qué bloque usarías para que un Sprite <strong>repita</strong> una acción 10 veces?</p>
+            <div class="quiz-options">
+                <button class="btn btn-option" data-correct="false">Decir "Hola"</button>
+                <button class="btn btn-option" data-correct="false">Mover 10 pasos</button>
+                <button class="btn btn-option" data-correct="true">Repetir 10</button>
+            </div>
+            <div id="feedback-4" class="feedback hidden"></div>
+            <!-- Botón de avance para la pantalla 4 (oculto) -->
+        </div>
+
+        <!-- Navegación Global -->
+        <nav>
+        </nav>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const screens = document.querySelectorAll('.screen');
+            
+            // Botones de avance de cada pantalla
+            const btnGotoEditor = document.getElementById('btn-goto-editor');
+            const btnGotoQuiz = document.getElementById('btn-goto-quiz');
+
+            let currentScreenIndex = 0;
+            let sequenceCorrect = false; // Para controlar el avance en la pantalla 3
+            
+            // Definir elementos para el reseteo
+            const feedback3 = document.getElementById('feedback-3');
+            const feedback4 = document.getElementById('feedback-4');
+            const dropZone = document.getElementById('drop-zone');
+            const draggables = document.querySelectorAll('#block-palette .scratch-block, #drop-zone .scratch-block');
+
+
+            function showScreen(index) {
+                // Ocultar todas las pantallas
+                screens.forEach(screen => screen.classList.add('hidden'));
+                
+                // Mostrar la pantalla solicitada
+                if (screens[index]) {
+                    screens[index].classList.remove('hidden');
+                    currentScreenIndex = index;
+                }
+                
+            }
+
+            // --- LISTENERS DE NAVEGACIÓN ---
+
+            // Botón "Comenzar" en Pantalla 1
+            document.querySelector('.btn-start').addEventListener('click', () => {
+                // resetGame(); // Ya no se resetea aquí, se resetea AL FINALIZAR
+                showScreen(1);
+            });
+
+            // Botones de navegación globales
+            // (Eliminados)
+
+            // Botones de avance secuencial
+            btnGotoEditor.addEventListener('click', () => showScreen(2));
+            btnGotoQuiz.addEventListener('click', () => showScreen(3));
+            
+            // --- LÓGICA DE ARRASTRAR Y SOLTAR (PANTALLA 3) ---
+
+            const dropZonePlaceholder = dropZone.querySelector('p');
+            let draggedElement = null;
+
+            draggables.forEach(block => {
+                block.addEventListener('dragstart', (e) => {
+                    draggedElement = e.target;
+                    e.target.classList.add('dragging');
+                    e.dataTransfer.setData('text/plain', e.target.id);
+                });
+
+                block.addEventListener('dragend', (e) => {
+                    e.target.classList.remove('dragging');
+                });
+            });
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault(); // Necesario para permitir el drop
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (draggedElement) {
+                    // Ocultar el texto placeholder
+                    if (dropZonePlaceholder) {
+                        dropZonePlaceholder.style.display = 'none';
+                    }
+                    
+                    // Mover el bloque
+                    dropZone.appendChild(draggedElement);
+                    draggedElement.style.cursor = 'default';
+                    draggedElement.draggable = false;
+                    
+                    draggedElement = null;
+                    checkSequence();
+                }
+            });
+
+            function checkSequence() {
+                const children = Array.from(dropZone.children).filter(el => el.classList.contains('scratch-block'));
+                const ids = children.map(child => child.id);
+                const correctSequenceIds = ['block-drag-1', 'block-drag-2', 'block-drag-3'];
+
+                if (children.length === 3) {
+                    let isCorrect = ids.join(',') === correctSequenceIds.join(',');
+                    
+                    if (isCorrect) {
+                        feedback3.textContent = '¡Secuencia Scratch correcta!';
+                        feedback3.className = 'feedback success';
+                        btnGotoQuiz.classList.remove('hidden'); // Mostrar botón para ir al reto
+                    } else {
+                        feedback3.textContent = '¡Ups! Ese no es el orden. Intenta de nuevo.';
+                        feedback3.className = 'feedback error';
+                        btnGotoQuiz.classList.add('hidden'); // Ocultar botón si se equivocan
+                    }
+                    feedback3.classList.remove('hidden');
+                }
+            }
+            
+            // --- LÓGICA DEL MINI RETO (PANTALLA 4) ---
+            
+            const quizOptions = document.querySelectorAll('.btn-option');
+
+            quizOptions.forEach(button => {
+                button.addEventListener('click', () => {
+                    const isCorrect = button.dataset.correct === 'true';
+
+                    if (isCorrect) {
+                        feedback4.textContent = '¡Misión completada! Volviendo al inicio...';
+                        feedback4.className = 'feedback success';
+                        // Reiniciar automáticamente al inicio
+                        setTimeout(() => {
+                            resetGame(); // Resetea el juego completo
+                            showScreen(0); // Vuelve a la pantalla de inicio
+                        }, 2000); 
+                    } else {
+                        feedback4.textContent = '¡Intenta de nuevo! Ese bloque no sirve para repetir.';
+                        feedback4.className = 'feedback error';
+                    }
+                    feedback4.classList.remove('hidden');
+                });
+            });
+
+            function resetGame() {
+                // 1. Resetear Drag & Drop
+                const palette = document.getElementById('block-palette');
+                const dropZone = document.getElementById('drop-zone');
+                
+                // Mover todos los bloques arrastrables de vuelta a la paleta
+                draggables.forEach(block => {
+                    palette.appendChild(block);
+                    block.draggable = true;
+                    block.style.cursor = 'grab';
+                });
+
+                // 2. Mostrar placeholder del drop-zone
+                if (dropZonePlaceholder) {
+                    dropZonePlaceholder.style.display = 'block';
+                }
+                
+                // 3. Limpiar bloques hijos del dropzone (por si acaso)
+                Array.from(dropZone.children).forEach(child => {
+                    if (child.tagName !== 'P') {
+                        dropZone.removeChild(child);
+                    }
+                });
+
+                // 4. Ocultar todos los mensajes de feedback
+                feedback3.classList.add('hidden');
+                feedback4.classList.add('hidden');
+
+                // 5. Ocultar botones condicionales
+                btnGotoQuiz.classList.add('hidden');
+                
+                // 6. Resetear bandera de secuencia
+                sequenceCorrect = false;
+            }
+
+
+            // Iniciar en la pantalla 0
+            showScreen(0);
+        });
+    </script>
+</body>
+</html>
